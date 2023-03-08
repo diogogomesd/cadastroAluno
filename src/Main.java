@@ -2,6 +2,7 @@ import cursojava.classes.Aluno;
 import cursojava.classes.Disciplina;
 import cursojava.classes.Secretario;
 import cursojava.constantes.StatusAluno;
+import cursojava.interfaces.PermitirAcesso;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -11,13 +12,13 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        String user = JOptionPane.showInputDialog("informe o login");
+        String login = JOptionPane.showInputDialog("informe o login");
         String senha = JOptionPane.showInputDialog("informe a senha");
 
-        Secretario secretario = new Secretario();
-        secretario.setLogin(user);
-        secretario.setSenha(senha);
-        if(secretario.autenticar()) { //se for verdadeiro acessar
+        PermitirAcesso permitirAcesso = new Secretario(login, senha);
+
+
+        if(permitirAcesso.autenticar()) { //se for verdadeiro acessar
             List<Aluno> alunos = new ArrayList<Aluno>();
 
             HashMap<String, List<Aluno>> maps = new HashMap<String, List<Aluno>>();
