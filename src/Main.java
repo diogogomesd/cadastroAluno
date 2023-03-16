@@ -1,36 +1,37 @@
 import cursojava.classes.Aluno;
+import cursojava.classes.Diretor;
 import cursojava.classes.Disciplina;
 import cursojava.classes.Secretario;
+import cursojava.classesauxiliares.FuncaoAutenticacao;
 import cursojava.constantes.StatusAluno;
+import cursojava.excessao.ExcessaoCustomizada;
 import cursojava.interfaces.PermitirAcesso;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExcessaoCustomizada {
 
-        String login = JOptionPane.showInputDialog("informe o login");
-        String senha = JOptionPane.showInputDialog("informe a senha");
+        try {
+            lerArquivo();
 
-        PermitirAcesso permitirAcesso = new Secretario(login, senha);
+            String login = JOptionPane.showInputDialog("informe o login");
+            String senha = JOptionPane.showInputDialog("informe a senha");
 
-
-        if(permitirAcesso.autenticar()) { //se for verdadeiro acessar
-            List<Aluno> alunos = new ArrayList<Aluno>();
-
-            HashMap<String, List<Aluno>> maps = new HashMap<String, List<Aluno>>();
-
-
-            for(int qtd = 1; qtd <= 5; qtd++) {
-
-                Aluno aluno1 = new Aluno();
-
-                aluno1.setNome(JOptionPane.showInputDialog("Qual é o seu nome "+qtd+"?"));
-				/*aluno1.setIdade(Integer.valueOf(JOptionPane.showInputDialog("Qual e sua idade?")));
-				aluno1.setDataNacimento(JOptionPane.showInputDialog("Qual sua data de nascimento?"));
+            if (new FuncaoAutenticacao(new Secretario(login, senha)).autenticar()) { //se for verdadeiro acessar
+                List<Aluno> alunos = new ArrayList<Aluno>();
+                HashMap<String, List<Aluno>> maps = new HashMap<String, List<Aluno>>();
+                for (int qtd = 1; qtd <= 1; qtd++) {
+                    Aluno aluno1 = new Aluno();
+                    aluno1.setNome(JOptionPane.showInputDialog("Qual é o seu nome " + qtd + "?"));
+				    aluno1.setIdade(Integer.valueOf(JOptionPane.showInputDialog("Qual e sua idade?")));
+				/*aluno1.setDataNacimento(JOptionPane.showInputDialog("Qual sua data de nascimento?"));
 				aluno1.setRegistroGeral(JOptionPane.showInputDialog("Qual é o numero do seu RG?"));
 				aluno1.setNumeroCpf(JOptionPane.showInputDialog("Qual é o numero do seu CPF?"));
 				aluno1.setNomeMae(JOptionPane.showInputDialog("Qual é o nome da sua mae?"));
@@ -40,65 +41,59 @@ public class Main {
 				aluno1.setNomeEscola(JOptionPane.showInputDialog("Qual é o nome da sua escola?"));*/
 
 
-                for(int pos = 1; pos <= 1; pos ++) {
-                    String nomeDisciplina = JOptionPane.showInputDialog("Qual a disciplina "+pos+" ?");
-                    double notaDisciplina = Double.parseDouble(JOptionPane.showInputDialog("Qual a noata da disciplina "+pos+" ?"));
-                    Disciplina disciplina = new Disciplina();
-                    disciplina.setDisciplina(nomeDisciplina);
-                    disciplina.setNota(notaDisciplina);
+                    for (int pos = 1; pos <= 1; pos++) {
+                        String nomeDisciplina = JOptionPane.showInputDialog("Qual a disciplina " + pos + " ?");
+                        double notaDisciplina = Double.parseDouble(JOptionPane.showInputDialog("Qual a nota da disciplina " + pos + " ?"));
+                        Disciplina disciplina = new Disciplina();
+                        disciplina.setDisciplina(nomeDisciplina);
+                        //disciplina.setNota(notaDisciplina);
 
-                    aluno1.getDisciplinas().add(disciplina);
+                        aluno1.getDisciplinas().add(disciplina);
+                    }
+                    int escolha = JOptionPane.showConfirmDialog(null, "Deseja remover alguma disciplina?");
+
+                    if (escolha == 0) {
+
+                        int continuarRemover = 0;
+                        int posicao = 1;
+
+                        while (continuarRemover == 0) {
+
+                            int disciplinaRemover = Integer.parseInt(JOptionPane.showInputDialog("qual a disciplina a ser removida 1, 2, 3, ou 4?"));
+                            aluno1.getDisciplinas().remove((disciplinaRemover) - posicao);
+                            posicao++;
+                            continuarRemover = JOptionPane.showConfirmDialog(null, "Continuar a Remover Disciplina?");
+                        }
+                    }
+                    alunos.add(aluno1);
                 }
-                int escolha = JOptionPane.showConfirmDialog(null, "Deseja remover alguma disciplina?");
 
-                if(escolha == 0) {
+                maps.put(StatusAluno.APROVADO, new ArrayList<Aluno>());
+                maps.put(StatusAluno.RECUPERACAO, new ArrayList<Aluno>());
+                maps.put(StatusAluno.REPROVADO, new ArrayList<Aluno>());
 
-                    int continuarRemover = 0;
-                    int posicao = 1;
-
-                    while (continuarRemover == 0) {
-
-                        int disciplinaRemover = Integer.parseInt(JOptionPane.showInputDialog("qual a disciplina a ser removida 1, 2, 3, ou 4?"));
-                        aluno1.getDisciplinas().remove((disciplinaRemover)-posicao);
-                        posicao ++;
-                        continuarRemover = JOptionPane.showConfirmDialog(null, "Continuar a Remover Disciplina?");
+                for (Aluno aluno : alunos) {
+                    if (aluno.getAlunoAprovado2().equalsIgnoreCase(StatusAluno.APROVADO)) {
+                        maps.get(StatusAluno.APROVADO).add(aluno);
+                    } else if (aluno.getAlunoAprovado2().equalsIgnoreCase(StatusAluno.RECUPERACAO)) {
+                        maps.get(StatusAluno.RECUPERACAO).add(aluno);
+                    } else {
+                        maps.get(StatusAluno.REPROVADO).add(aluno);
                     }
                 }
-                alunos.add(aluno1);
-            }
 
-            maps.put(StatusAluno.APROVADO, new ArrayList<Aluno>());
-            maps.put(StatusAluno.RECUPERACAO, new ArrayList<Aluno>());
-            maps.put(StatusAluno.REPROVADO, new ArrayList<Aluno>());
-
-            for(Aluno aluno : alunos) {
-                if(aluno.getAlunoAprovado2().equalsIgnoreCase(StatusAluno.APROVADO)) {
-                    maps.get(StatusAluno.APROVADO).add(aluno);
+                System.out.println("------------------------Lista do Aprovados-----------------------------------");
+                for (Aluno aluno : maps.get(StatusAluno.APROVADO)) {
+                    System.out.println("Resultado = " + aluno.getAlunoAprovado2() + " com media = " + aluno.getMediaNota());
                 }
-                else if(aluno.getAlunoAprovado2().equalsIgnoreCase(StatusAluno.RECUPERACAO)) {
-                    maps.get(StatusAluno.RECUPERACAO).add(aluno);
+                System.out.println("------------------------Lista do Recuperacao-----------------------------------");
+                for (Aluno aluno : maps.get(StatusAluno.RECUPERACAO)) {
+                    System.out.println("Resultado = " + aluno.getAlunoAprovado2() + " com media = " + aluno.getMediaNota());
                 }
-                else {
-                    maps.get(StatusAluno.REPROVADO).add(aluno);
+                System.out.println("------------------------Lista do Reprovados-----------------------------------");
+                for (Aluno aluno : maps.get(StatusAluno.REPROVADO)) {
+                    System.out.println("Resultado = " + aluno.getAlunoAprovado2() + " com media = " + aluno.getMediaNota());
                 }
-            }
-
-            System.out.println("------------------------Lista do Aprovados-----------------------------------");
-            for(Aluno aluno : maps.get(StatusAluno.APROVADO)) {
-                System.out.println("Resultado = "+aluno.getAlunoAprovado2()+ " com media = "+aluno.getMediaNota());
-            }
-            System.out.println("------------------------Lista do Recuperacao-----------------------------------");
-            for(Aluno aluno : maps.get(StatusAluno.RECUPERACAO)) {
-                System.out.println("Resultado = "+aluno.getAlunoAprovado2()+ " com media = "+aluno.getMediaNota());
-            }
-            System.out.println("------------------------Lista do Reprovados-----------------------------------");
-            for(Aluno aluno : maps.get(StatusAluno.REPROVADO)) {
-                System.out.println("Resultado = "+aluno.getAlunoAprovado2()+ " com media = "+aluno.getMediaNota());
-            }
-
-
-
-
 
 			/*
 			for(int pos = 0; pos<alunos.size();pos++) {
@@ -181,9 +176,49 @@ public class Main {
 				System.out.println("alunos nao sao iguais");
 			}
 			*/
+            } else {
+                JOptionPane.showMessageDialog(null, "acesso nao permitido");
+            }
         }
-        else {
-            JOptionPane.showMessageDialog(null, "acesso nao permitido");
+        catch (NumberFormatException e){
+            StringBuilder saida = new StringBuilder();
+            for(int i = 0 ; i < e.getStackTrace().length; i++){
+                saida.append("\n classe de erro = "+e.getStackTrace()[i].getClassName());
+                saida.append("\n metodo de erro = "+e.getStackTrace()[i].getMethodName());
+                saida.append("\n linha de erro = "+e.getStackTrace()[i].getLineNumber());
+                saida.append("\n Class = "+e.getClass().getName());
+            }
+            JOptionPane.showMessageDialog(null, "erro ao converter numero "+saida.toString());
+            e.printStackTrace();
+        }
+        catch (ExcessaoCustomizada e){
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro de excecao customizada "+e.getClass().getName());
+        }
+        /*catch (Exception e){
+            e.printStackTrace();
+            StringBuilder saida = new StringBuilder();
+            for(int i = 0 ; i < e.getStackTrace().length; i++) {
+                saida.append("\n classe de erro = " + e.getStackTrace()[i].getClassName());
+                saida.append("\n metodo de erro = " + e.getStackTrace()[i].getMethodName());
+                saida.append("\n linha de erro = " + e.getStackTrace()[i].getLineNumber());
+                saida.append("\n Class = " + e.getClass().getName());
+            }
+            JOptionPane.showMessageDialog(null, "erro ao procurar arquivo de texto "+saida.toString());
+            JOptionPane.showMessageDialog(null, "erro inexperado!!"+e.getClass().getName());
+        }*/
+        finally {//sempre é excutado ocorrendo erros ou não
+            JOptionPane.showMessageDialog(null, "Obrigado por estudar JAVA");
+        }
+    }
+
+    public static void lerArquivo() throws ExcessaoCustomizada {
+        try {
+            File file = new File("C:\\Users\\diogo\\IdeaProjects\\primeiro-programa-java\\src\\cursojava\\txt\\arquivo.txt");
+            Scanner scanner = new Scanner(file);
+        }catch (FileNotFoundException e){
+            //e.printStackTrace();
+            throw new ExcessaoCustomizada(e.getMessage());
         }
     }
 
