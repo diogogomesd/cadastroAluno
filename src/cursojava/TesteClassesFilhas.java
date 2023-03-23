@@ -8,6 +8,7 @@ public class TesteClassesFilhas {
     public static void main(String[] args) {
 
         double[] notas = {8.8, 9.7, 7.6, 6.8};
+        double[] notasLogica = {7.1, 5.7, 9.6, 7.8};
 
         Aluno aluno = new Aluno();
         aluno.setNome("diogo");
@@ -16,15 +17,83 @@ public class TesteClassesFilhas {
         Disciplina disciplina = new Disciplina();
         disciplina.setDisciplina("php");
         disciplina.setNota(notas);
-
         aluno.getDisciplinas().add(disciplina);
 
-        System.out.println(aluno.getMediaNota());
+        Disciplina disciplina2 = new Disciplina();
+        disciplina2.setDisciplina("logica de programacao");
+        disciplina2.setNota(notasLogica);
+        aluno.getDisciplinas().add(disciplina2);
+
+        Aluno aluno1 = new Aluno();
+        aluno1.setNome("diogo");
+        aluno1.setNomeEscola("jdevTreinamentos");
+
+        Disciplina disciplina1 = new Disciplina();
+        disciplina1.setDisciplina("php");
+        disciplina1.setNota(notas);
+        aluno1.getDisciplinas().add(disciplina1);
+
+        Disciplina disciplina3 = new Disciplina();
+        disciplina3.setDisciplina("logica de programacao");
+        disciplina3.setNota(notasLogica);
+        aluno1.getDisciplinas().add(disciplina3);
+    //---------------------------------------------------------------------
+
+    Aluno[] arrayAlunos = new Aluno[2];
+    arrayAlunos[0] = aluno;
+    arrayAlunos[1] = aluno1;
+
+
+    for(int pos = 0; pos < arrayAlunos.length; pos++){
+        System.out.println("nome do aluno e = "+arrayAlunos[pos].getNome());
+        for (Disciplina d : arrayAlunos[pos].getDisciplinas()){
+            System.out.println("nome da disciplia e = "+d.getDisciplina());
+            for(int posNota = 0 ; posNota < d.getNota().length; posNota ++){
+                System.out.println("Nota = "+((posNota)+1) +" e igual = "+d.getNota()[posNota]);
+            }
+        }
+    }
 
 
 
 
-        /*
+/*
+        System.out.println("nome do aluno = "+aluno.getNome()+ " inscrito no curso : "+aluno.getNomeEscola());
+
+        for(Disciplina d : aluno.getDisciplinas()){
+            System.out.println("------------------------------disciplinas do aluno------------------------------");
+            System.out.println("Disciplina = "+d.getDisciplina());
+            System.out.println("as notas da disciplina são : ");
+
+            //maior nota
+            double notaMax = 0.0;
+            for (int pos = 0; pos < d.getNota().length; pos ++){
+                System.out.println("Nota = "+((pos)+1) +" e igual = "+d.getNota()[pos]);
+                if(pos == 0){
+                  notaMax = d.getNota()[pos];
+                }
+                else{
+                    if(d.getNota()[pos] > notaMax ){
+                        notaMax = d.getNota()[pos];
+                    }
+                }
+            }
+            System.out.println("a maior nota da disciplina e = "+d.getDisciplina()+ " e igual a "+notaMax);
+            double notaMin = 0.0;
+            for (int pos = 0; pos < d.getNota().length; pos ++){
+                System.out.println("Nota = "+((pos)+1) +" e igual = "+d.getNota()[pos]);
+                if(pos == 0){
+                    notaMin = d.getNota()[pos];
+                }
+                else{
+                    if(d.getNota()[pos] < notaMin ){
+                        notaMin = d.getNota()[pos];
+                    }
+                }
+            }
+            System.out.println("a menor nota da disciplina e = "+d.getDisciplina()+ " e igual a "+notaMin);
+        }
+
         double[] valores = {9.5, 8.9, 5.8};
         for(int i = 0; i < valores.length; i++) {
             System.out.println(valores[i]);
